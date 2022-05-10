@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/code%20style-black-black?style=for-the-badge" alt="Black" />
   </p>
   <p align="center">
-    A powerful IDE that tries to give the user the best working environmen
+    A powerful IDE that tries to give the user the best working environment
     <br />
     <a href="">Explore Website</a>
     ·

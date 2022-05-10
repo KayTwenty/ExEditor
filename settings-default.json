@@ -4,7 +4,7 @@
   "text_color": "white",
   "tab_size": "1.1c",
   "font_size": "15",
-  "menu_bg": "#30362F",
-  "menu_active_fg": "#fff",
-  "menu_active_bg": "#9c8383"
+	"menu_bg": "#30362F",
+	"menu_active_fg": "#fff",
+	"menu_active_bg": "#9c8383"
 }
