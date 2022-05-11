@@ -165,21 +165,21 @@ class TextLineNumbers(tk.Canvas):
 
     def redraw(self, *args):
         '''redraw line numbers'''
-        self.delete("all")
+        self.delete('all')
         self.config(width=(self._parent.font_size * 3))
 
-        i = self.textwidget.index("@0,0")
+        i = self.textwidget.index('@0,0')
         while True:
             dline = self.textwidget.dlineinfo(i)
             if dline is None:
                 break
             y = dline[1]
-            linenum = str(i).split(".")[0]
-            self.create_text(2, y, anchor="nw",
+            linenum = str(i).split('.')[0]
+            self.create_text(2, y, anchor='nw',
                              text=linenum,
                              font=(self._text_font, self._parent.font_size),
                              fill='#c9bebb')
-            i = self.textwidget.index("%s+1line" % i)
+            i = self.textwidget.index('%s+1line' % i)
 
 
 class CustomText(tk.Text):
@@ -187,8 +187,8 @@ class CustomText(tk.Text):
         tk.Text.__init__(self, *args, **kwargs)
 
         # Create a proxy for the underlying widget
-        self._orig = self._w + "_orig"
-        self.tk.call("rename", self._w, self._orig)
+        self._orig = self._w + '_orig'
+        self.tk.call('rename', self._w, self._orig)
         self.tk.createcommand(self._w, self._proxy)
 
     def _proxy(self, *args):
@@ -201,14 +201,14 @@ class CustomText(tk.Text):
 
         # Generate an event if something was added or deleted,
         # Or the cursor position changed
-        if (args[0] in ("insert", "replace", "delete") or
-                args[0:3] == ("mark", "set", "insert") or
-                args[0:2] == ("xview", "moveto") or
-                args[0:2] == ("xview", "scroll") or
-                args[0:2] == ("yview", "moveto") or
-                args[0:2] == ("yview", "scroll")
-                ):
-            self.event_generate("<<Change>>", when="tail")
+        if (args[0] in ('insert', 'replace', 'delete') or 
+            args[0:3] == ('mark', 'set', 'insert') or
+            args[0:2] == ('xview', 'moveto') or
+            args[0:2] == ('xview', 'scroll') or
+            args[0:2] == ('yview', 'moveto') or
+            args[0:2] == ('yview', 'scroll')
+        ):
+            self.event_generate('<<Change>>', when='tail')
 
         # Return what the actual widget returned
         return result
@@ -218,7 +218,7 @@ class ExEditor(tk.Frame):
     def __init__(self, *args, **kwargs):
         tk.Frame.__init__(self, *args, **kwargs)
         master.title('untitled - ExEditor')
-        master.geometry('1200x700')
+        master.geometry('1920x1080')
 
         master.tk_setPalette(background='#181816', foreground='black')
 
@@ -312,10 +312,14 @@ class ExEditor(tk.Frame):
     def enter_quiet_mode(self, *args):
         self.statusbar.hide_status_bar()
         self.menubar.hide_menu()
+        self.scrollx.configure(width=0)
+        self.scrolly.configure(width=0)
 
     def leave_quiet_mode(self, *args):
         self.statusbar.show_status_bar()
         self.menubar.show_menu()
+        self.scrollx.configure(width=8)
+        self.scrolly.configure(width=8)
 
     # Renames the window title bar to the name of the current file.
     def set_window_title(self, name=None):
