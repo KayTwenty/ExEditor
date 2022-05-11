@@ -1,74 +1,92 @@
 import os
+import json
 import tkinter as tk
 import tkinter.font as tk_font
-import json
-from tkinter import filedialog
-from tkinter import messagebox
-from tkinter import colorchooser
+from tkinter import filedialog, messagebox, colorchooser, END, BOTH, LEFT, RIGHT, BOTTOM, CENTER, Y
 
 
 class Menu(tk.Menu):
+    # Menu method and its initializatipn from settings.json
     def __init__(self, *args, **kwargs):
         with open('settings.json', 'r') as settings_json:
             settings = json.load(settings_json)
         super().__init__(bg=settings["menu_bg"],
                          activeforeground=settings['menu_active_fg'],
                          activebackground=settings['menu_active_bg'],
+                         foreground='white',
                          activeborderwidth=0,
                          *args, **kwargs)
 
+
 class Menubar:
+    # Initialising the menu bar of editor
     def __init__(self, parent):
         self._parent = parent
         font_specs = ('Droid Sans Fallback', 12)
 
+        # Setting up basic features in menubar
         menubar = tk.Menu(parent.master, font=font_specs,
-                          fg='#c9bebb', bg='#3C443A',
-                          activebackground='#3C443A',
+                          fg='#c9bebb', bg='#181816',
+                          activeforeground='white',
+                          activebackground='#38342b',
                           bd=0)
+
         parent.master.config(menu=menubar)
         self._menubar = menubar
-
+        # Adding features file dropdown in menubar
         file_dropdown = Menu(menubar, font=font_specs, tearoff=0)
+        # New file creation feature
         file_dropdown.add_command(label='New File',
                                   accelerator='Ctrl+N',
                                   command=parent.new_file)
+        # Open file feature
         file_dropdown.add_command(label='Open File',
                                   accelerator='Ctrl+O',
                                   command=parent.open_file)
+        # Save file feature
         file_dropdown.add_command(label='Save',
                                   accelerator='Ctrl+S',
                                   command=parent.save)
+        # Save as feature
         file_dropdown.add_command(label='Save As',
                                   accelerator='Ctrl+Shift+S',
                                   command=parent.save_as)
+        # Run file feature
         file_dropdown.add_command(label='Run File',
                                   accelerator='Ctrl+b',
                                   command=parent.run)
+        # Exit Feature
         file_dropdown.add_separator()
         file_dropdown.add_command(label='Exit',
                                   command=parent.master.destroy)
 
+        # Adding features to about dropdown in menubar
         about_dropdown = Menu(menubar, font=font_specs, tearoff=0)
         about_dropdown.add_command(label='Release Notes',
                                    command=self.release_notes)
+        # About command Added
         about_dropdown.add_command(label='About',
                                    command=self.about_message)
 
+        # Adding features to settings dropdown in menubar
+        # Edit settings feature
         settings_dropdown = Menu(menubar, font=font_specs, tearoff=0)
         settings_dropdown.add_command(label='Edit Settings',
                                       command=parent.open_settings_file)
+        # Reset settings feature
         settings_dropdown.add_command(label='Reset Settings to Default',
                                       command=parent.reset_settings_file)
-
+        # Menubar add buttons
         menubar.add_cascade(label='File', menu=file_dropdown)
         menubar.add_cascade(label='Settings', menu=settings_dropdown)
-        menubar.add_command(label='Color Wheel',
-                            command=self.open_color_picker)
+        menubar.add_command(label='Hex Colors', command=self.open_color_picker)
         menubar.add_command(label='Zen Mode', command=self.enter_quiet_mode)
         menubar.add_cascade(label='About', menu=about_dropdown)
-        self.menu_fields = [field for field in (file_dropdown, about_dropdown, settings_dropdown)]
-            
+
+        self.menu_fields = [field for field in (
+            file_dropdown, about_dropdown, settings_dropdown)]
+
+    # Settings reconfiguration function
     def reconfigure_settings(self):
         with open('settings.json', 'r') as settings_json:
             settings = json.load(settings_json)
@@ -77,131 +95,217 @@ class Menubar:
                             activeforeground=settings['menu_active_fg'],
                             activebackground=settings['menu_active_bg'],)
 
+    # Color to different text tye can be set here
     def open_color_picker(self):
-        return colorchooser.askcolor()[1]
+        return colorchooser.askcolor(title='Hex Colors', initialcolor='white')[1]
 
+    # Quiet mode is defined here
     def enter_quiet_mode(self):
         self._parent.enter_quiet_mode()
 
+    # Hiding the menubar
     def hide_menu(self):
         empty_menu = tk.Menu(self._parent.master)
         self._parent.master.config(menu=empty_menu)
 
+    # Display the menubar
     def show_menu(self):
         self._parent.master.config(menu=self._menubar)
 
+    # What to display on clicking about feature is defined here
     def about_message(self):
         box_title = 'About ExEditor'
-        box_message = 'A powerful IDE that tries to give the user the best working environment'
+        box_message = 'A IDE that tries to give the user the best working environment'
         messagebox.showinfo(box_title, box_message)
 
     def release_notes(self):
         box_title = 'Release Notes'
-        box_message = 'Version 0.2 - Added new right click menu & zen mode support'
+        box_message = 'Version 0.3 - Reworked UI & Added Right Click Menu'
         messagebox.showinfo(box_title, box_message)
 
 
 class Statusbar:
     def __init__(self, parent):
-
         self._parent = parent
+
         font_specs = ('Droid Sans Fallback', 10)
 
         self.status = tk.StringVar()
-        self.status.set('ExEditor (v0.2)')
+        self.status.set('ExEditor (v0.3)')
 
         label = tk.Label(parent.textarea, textvariable=self.status, fg='#c9bebb',
-                         bg='#272C26', anchor='sw', font=font_specs)
-        label.pack(side=tk.BOTTOM, fill=tk.BOTH)
+                         bg='#38342b', anchor='se', font=font_specs)
+        label.pack(side=BOTTOM, fill=BOTH)
         self._label = label
 
     def update_status(self, *args):
         if args[0] == 'saved':
-            self.status.set('Changes saved!')
+            self.status.set('changes saved')
         elif args[0] == 'no file':
             self.status.set('Cannot run! No file selected.')
         else:
-            self.status.set('ExEditor (v0.2)')
+            self.status.set('ExEditor (v0.3)')
 
     def hide_status_bar(self):
         self._label.pack_forget()
 
     def show_status_bar(self):
-        self._label.pack(side=tk.BOTTOM, fill=tk.BOTH)
+        self._label.pack(side=BOTTOM, fill=BOTH)
 
 
-class ExEditor:
-    def __init__(self, master):
+class TextLineNumbers(tk.Canvas):
+    def __init__(self, parent, *args, **kwargs):
+        tk.Canvas.__init__(self, *args, **kwargs)
+        self._text_font = parent.settings['text_font']
+        self._parent = parent
+        self.textwidget = parent.textarea
+
+    def attach(self, text_widget):
+        self.textwidget = text_widget
+
+    def redraw(self, *args):
+        '''redraw line numbers'''
+        self.delete("all")
+        self.config(width=(self._parent.font_size * 3))
+
+        i = self.textwidget.index("@0,0")
+        while True:
+            dline = self.textwidget.dlineinfo(i)
+            if dline is None:
+                break
+            y = dline[1]
+            linenum = str(i).split(".")[0]
+            self.create_text(2, y, anchor="nw",
+                             text=linenum,
+                             font=(self._text_font, self._parent.font_size),
+                             fill='#c9bebb')
+            i = self.textwidget.index("%s+1line" % i)
+
+
+class CustomText(tk.Text):
+    def __init__(self, *args, **kwargs):
+        tk.Text.__init__(self, *args, **kwargs)
+
+        # Create a proxy for the underlying widget
+        self._orig = self._w + "_orig"
+        self.tk.call("rename", self._w, self._orig)
+        self.tk.createcommand(self._w, self._proxy)
+
+    def _proxy(self, *args):
+        # Let the actual widget perform the requested action
+        try:
+            cmd = (self._orig,) + args
+            result = self.tk.call(cmd)
+        except tk.TclError:
+            result = ''
+
+        # Generate an event if something was added or deleted,
+        # Or the cursor position changed
+        if (args[0] in ("insert", "replace", "delete") or
+                args[0:3] == ("mark", "set", "insert") or
+                args[0:2] == ("xview", "moveto") or
+                args[0:2] == ("xview", "scroll") or
+                args[0:2] == ("yview", "moveto") or
+                args[0:2] == ("yview", "scroll")
+                ):
+            self.event_generate("<<Change>>", when="tail")
+
+        # Return what the actual widget returned
+        return result
+
+
+class ExEditor(tk.Frame):
+    def __init__(self, *args, **kwargs):
+        tk.Frame.__init__(self, *args, **kwargs)
         master.title('untitled - ExEditor')
         master.geometry('1200x700')
-        master.tk_setPalette(background='#30362F',
-                             foreground='#c9bebb',
-                             activeForeground='white',
-                             activeBackground='#151B24',)
-        with open('settings.json') as settings_json:
-            settings = json.load(settings_json)
 
-        self.text_font = settings['text_font']
-        self.bg_color = settings['bg_color']
-        self.text_color = settings['text_color']
-        self.tab_size = settings['tab_size']
-        self.font_style = tk_font.Font(family=self.text_font, size=settings['font_size'])
+        master.tk_setPalette(background='#181816', foreground='black')
+
+        with open('settings.json') as settings_json:
+            self.settings = json.load(settings_json)
+
+        self.text_font = self.settings['text_font']
+        self.bg_color = self.settings['bg_color']
+        self.text_color = self.settings['text_color']
+        self.tab_size = self.settings['tab_size']
+        self.font_size = int(self.settings['font_size'])
+        self.font_style = tk_font.Font(family=self.text_font,
+                                       size=self.settings['font_size'])
 
         self.master = master
         self.filename = None
 
-        self.textarea = tk.Text(master, font=self.text_font)
-        self.scroll = tk.Scrollbar(master, command=self.textarea.yview,
-                                   bg='#383030', troughcolor='#2e2724',
-                                   bd=0, width=8, highlightthickness=0,
-                                   activebackground='#3C443A')
+        self.textarea = CustomText(self)
+        self.scrolly = tk.Scrollbar(master, command=self.textarea.yview,
+                                    bg='#383030', troughcolor='#2e2724',
+                                    bd=0, width=8, highlightthickness=0,
+                                    activebackground='#8a7575', orient='vertical')
 
-        self.textarea.configure(yscrollcommand=self.scroll.set,
+        self.scrollx = tk.Scrollbar(master, command=self.textarea.xview,
+                                    bg='#383030', troughcolor='#2e2724',
+                                    bd=0, width=8, highlightthickness=0,
+                                    activebackground='#8a7575', orient='horizontal')
+
+        self.textarea.configure(yscrollcommand=self.scrolly.set,
+                                xscrollcommand=self.scrollx.set,
                                 bg=self.bg_color, fg=self.text_color,
-                                wrap='word', spacing1=1, tabs=self.tab_size,
-                                spacing3=1, selectbackground='#3d3430',
-                                insertbackground='white', bd=0,
-                                highlightthickness=0,
-                                insertofftime=0, font=self.font_style,
+                                wrap='none', spacing1=1, tabs=self.tab_size,
+                                spacing3=1, selectbackground='#7a7666',
+                                insertbackground='white', bd=0, insertofftime=0,
+                                highlightthickness=0, font=self.font_style,
                                 undo=True, autoseparators=True, maxundo=-1)
-
-        self.textarea.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.menubar = Menubar(self)
         self.statusbar = Statusbar(self)
-        
+        self.linenumbers = TextLineNumbers(self)
+
+        self.linenumbers.attach(self.textarea)
+        self.scrolly.pack(side=RIGHT, fill=Y)
+        self.scrollx.pack(side=BOTTOM, fill=BOTH)
+        self.linenumbers.pack(side=LEFT, fill=Y)
+        self.textarea.pack(side=RIGHT, fill=BOTH, expand=True)
+
         self.right_click_menu = tk.Menu(master, font=self.text_font,
-                                        fg='#c9bebb', bg='#3C443A',
+                                        fg='#c9bebb', bg='#2e2724',
                                         activebackground='#9c8383',
                                         bd=0, tearoff=0)
 
         self.right_click_menu.add_command(label='Cut',
-                                          accelerator='Ctrl+X')
+                                          accelerator='Ctrl+X',
+                                          command=self.cut)
         self.right_click_menu.add_command(label='Copy',
-                                          accelerator='Ctrl+C')
+                                          accelerator='Ctrl+C',
+                                          command=self.copy)
         self.right_click_menu.add_command(label='Paste',
-                                          accelerator='Ctrl+V')
+                                          accelerator='Ctrl+V',
+                                          command=self.paste)
 
+        # Loading in characters for the python syntax then setting their colors.
+
+        # Calling function to bind hotkeys.
         self.bind_shortcuts()
 
+        self.control_key = False
+
+    # Function used to reload settings after the user changes in settings.json
     def reconfigure_settings(self, settings_path, overwrite=False):
         with open(settings_path, 'r') as settings_json:
-            settings = json.load(settings_json)
-        text_font = settings['text_font']
-        bg_color = settings['bg_color']
-        text_color = settings['text_color']
-        tab_size = settings['tab_size']
-        font_style = tk_font.Font(family=text_font, size=settings['font_size'])
+            _settings = json.load(settings_json)
+        text_font = _settings['text_font']
+        bg_color = _settings['bg_color']
+        text_color = _settings['text_color']
+        tab_size = _settings['tab_size']
+        font_style = tk_font.Font(
+            family=text_font, size=_settings['font_size'])
         self.textarea.configure(font=font_style, bg=bg_color,
                                 fg=text_color, tabs=tab_size)
         if overwrite:
-            MsgBox = tk.messagebox.askquestion('Reset Settings?',
-                                               'Are you sure you want to reset the editor settings to their default value?',
-                                               icon='warning')
+            MsgBox = tk.messagebox.askquestion(
+                'Reset Settings?', 'Are you sure you want to reset the editor settings to their default value?',  icon='warning')
             if MsgBox == 'yes':
                 with open('settings.json', 'w') as user_settings:
-                    json.dump(settings, user_settings)
+                    json.dump(_settings, user_settings)
             else:
                 self.save('settings.json')
 
@@ -213,14 +317,16 @@ class ExEditor:
         self.statusbar.show_status_bar()
         self.menubar.show_menu()
 
+    # Renames the window title bar to the name of the current file.
     def set_window_title(self, name=None):
         if name:
             self.master.title(f'{name} - ExEditor')
         else:
             self.master.title('Untitled - ExEditor')
 
+    # Deletes all of the text in the current area and sets window title to default.
     def new_file(self, *args):
-        self.textarea.delete(1.0, tk.END)
+        self.textarea.delete(1.0, END)
         self.filename = None
         self.set_window_title()
 
@@ -235,7 +341,7 @@ class ExEditor:
                        ('HTML Documents', '*.html'),
                        ('CSS Documents', '*.css')])
         if self.filename:
-            self.textarea.delete(1.0, tk.END)
+            self.textarea.delete(1.0, END)
             with open(self.filename, 'r') as f:
                 self.textarea.insert(1.0, f.read())
             self.set_window_title(name=self.filename)
@@ -243,7 +349,7 @@ class ExEditor:
     def save(self, *args):
         if self.filename:
             try:
-                textarea_content = self.textarea.get(1.0, tk.END)
+                textarea_content = self.textarea.get(1.0, END)
                 with open(self.filename, 'w') as f:
                     f.write(textarea_content)
                 self.statusbar.update_status('saved')
@@ -267,7 +373,7 @@ class ExEditor:
                            ('Javascript Files', '*.js'),
                            ('HTML Documents', '*.html'),
                            ('CSS Documents', '*.css')])
-            textarea_content = self.textarea.get(1.0, tk.END)
+            textarea_content = self.textarea.get(1.0, END)
             with open(new_file, 'w') as f:
                 f.write(textarea_content)
             self.filename = new_file
@@ -276,16 +382,16 @@ class ExEditor:
         except Exception as e:
             print(e)
 
+    # Does not work
     def run(self, *args):
         if self.filename:
-            os.system(
-                f"cmd /k py {self.filename}")
+            os.system(f"cmd -- python3.8 {self.filename}")
         else:
             self.statusbar.update_status('no file')
 
     def open_settings_file(self):
         self.filename = 'settings.json'
-        self.textarea.delete(1.0, tk.END)
+        self.textarea.delete(1.0, END)
         with open(self.filename, 'r') as f:
             self.textarea.insert(1.0, f.read())
         self.set_window_title(name=self.filename)
@@ -294,7 +400,7 @@ class ExEditor:
         self.reconfigure_settings('settings-default.json', overwrite=True)
 
     def select_all_text(self, *args):
-        self.textarea.tag_add(tk.SEL, '1.0', tk.END)
+        self.textarea.tag_add(tk.SEL, '1.0', END)
         self.textarea.mark_set(tk.INSERT, '1.0')
         self.textarea.see(tk.INSERT)
         return 'break'
@@ -308,15 +414,71 @@ class ExEditor:
             self.textarea.insert(sel_start, new_color)
         except tk.TclError:
             pass
-    
-    # Triggers the right click menu to appear
+
     def show_click_menu(self, key_event):
         try:
             self.right_click_menu.tk_popup(key_event.x_root, key_event.y_root)
         finally:
             self.right_click_menu.grab_release()
 
-    # Where all the key binding are stored.
+    def copy(self, event=None):
+        try:
+            self.textarea.clipboard_clear()
+            text = self.textarea.get("sel.first", "sel.last")
+            self.textarea.clipboard_append(text)
+        except tk.TclError:
+            pass
+
+    def cut(self, event=None):
+        try:
+            self.copy()
+            self.textarea.delete("sel.first", "sel.last")
+        except tk.TclError:
+            pass
+
+    def paste(self, event=None):
+        try:
+            text = self.textarea.selection_get(selection='CLIPBOARD')
+            self.textarea.insert('insert', text)
+        except tk.TclError:
+            pass
+
+    def _on_change(self, key_event):
+        self.linenumbers.redraw()
+
+    def _on_mousewheel(self, event):
+        if self.control_key:
+            self.change_font_size(1 if event.delta > 0 else -1)
+
+    def _on_linux_scroll_up(self, _):
+        if self.control_key:
+            self.change_font_size(1)
+
+    def _on_linux_scroll_down(self, _):
+        if self.control_key:
+            self.change_font_size(-1)
+
+    def change_font_size(self, delta):
+        self.font_size = self.font_size + delta
+        min_font_size = 6
+        self.font_size = min_font_size if self.font_size < min_font_size else self.font_size
+        self.font_style = tk_font.Font(family=self.text_font,
+                                       size=self.font_size)
+        self.textarea.configure(font=self.font_style)
+
+    # control_l = 37
+    # control_r = 109
+    # mac_control = 262401 #control key in mac keyboard
+    # mac_control_l = 270336 #left control key in mac os with normal keyboard
+    # mac_control_r = 262145 #right control key in mac os with normal keyboard
+    def _on_keydown(self, event):
+        if event.keycode in [37, 109, 262401, 270336, 262145]:
+            self.control_key = True
+
+    def _on_keyup(self, event):
+        if event.keycode in [37, 109, 262401, 270336, 262145]:
+            self.control_key = False
+
     def bind_shortcuts(self, *args):
         self.textarea.bind('<Control-n>', self.new_file)
         self.textarea.bind('<Control-o>', self.open_file)
@@ -328,13 +490,22 @@ class ExEditor:
         self.textarea.bind('<Control-q>', self.enter_quiet_mode)
         self.textarea.bind('<Escape>', self.leave_quiet_mode)
         self.textarea.bind('<Key>', self.statusbar.update_status)
+        self.textarea.bind('<<Change>>', self._on_change)
+        self.textarea.bind('<Configure>', self._on_change)
         self.textarea.bind('<Button-3>', self.show_click_menu)
-
-    def python_syntax_highlighting(self):
-        pass
+        self.textarea.bind('<MouseWheel>', self._on_mousewheel)
+        self.textarea.bind('<Button-4>', self._on_linux_scroll_up)
+        self.textarea.bind('<Button-5>', self._on_linux_scroll_down)
+        self.textarea.bind('<KeyPress>', self._on_keydown)
+        self.textarea.bind('<KeyRelease>', self._on_keyup)
 
 
 if __name__ == '__main__':
     master = tk.Tk()
-    qt = ExEditor(master)
+    try:
+        p1 = tk.PhotoImage(file='./images/exe.png')
+        master.iconphoto(False, p1)
+    except Exception as e:
+        print(e)
+    qt = ExEditor(master).pack(side='top', fill='both', expand=True)
     master.mainloop()

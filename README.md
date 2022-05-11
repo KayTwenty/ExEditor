@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://google.com">
-    <img src="xyz.png" alt="Logo" width="150" height="150">
+    <img src="./images/exe.png" alt="Logo" width="150" height="150">
   </a>
   
   <h1 align="center">ExEditor</h1>
@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/code%20style-black-black?style=for-the-badge" alt="Black" />
   </p>
   <p align="center">
-    A powerful IDE that tries to give the user the best working environment
+    A IDE that tries to give the user the best working environment
     <br />
     <a href="">Explore Website</a>
     ·

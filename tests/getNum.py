@@ -18,5 +18,3 @@ def main():
     input("Press Enter to Quit")
 
 main()
-    
-    
