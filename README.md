@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://google.com">
-    <img src="./images/exe.png" alt="Logo" width="150" height="150">
+    <img src="./src/images/exe.png" alt="Logo" width="150" height="150">
   </a>
   
   <h1 align="center">ExEditor</h1>
@@ -21,8 +21,8 @@
 
 # Preview Screenshots
 <p align="left">
-  <img src="./images/preview.png" alt="Preview" width="700" height="400">
-  <img src="./images/preview2.png" alt="Preview2" width="700" height="400">
+  <img src="./src/images/preview.png" alt="Preview" width="700" height="400">
+  <img src="./src/images/preview2.png" alt="Preview2" width="700" height="400">
 </p>
 
 # Keyboard Shortcuts

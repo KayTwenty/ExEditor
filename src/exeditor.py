@@ -1,5 +1,6 @@
 import os
 import time
+import sys
 import yaml
 import tkinter as tk
 import tkinter.font as tk_font
@@ -317,14 +318,14 @@ class ExEditor(tk.Frame):
 
         except:
             self.save_as()
-        quit()
+        sys.exit()
 
     def on_closing(self):
         message = tk.messagebox.askyesnocancel("Save On Close", "Do you want to save the changes before closing?")
         if message == True:
             self.quit_save()
         elif message == False:
-            quit()
+            sys.exit()
         else:
             return
 
@@ -524,7 +525,7 @@ class ExEditor(tk.Frame):
 if __name__ == '__main__':
     master = tk.Tk()
     try:
-        p1 = tk.PhotoImage(file='../images/exe.png')
+        p1 = tk.PhotoImage(file='./images/exe.png')
         master.iconphoto(False, p1)
     except Exception as e:
         print(e)
