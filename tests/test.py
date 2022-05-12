@@ -1,8 +1,11 @@
 def main():
-	x = input("What is your fav color: ")
-	print("Your fav color is:", x)
-	input("Press <Enter> to quit")
+	x = input("What is your favourite food: ")
+	print("Your favourite food is:", x)
+	input("Type <Enter> to quit")
+
 main()
+
+
 
 
 
