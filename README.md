@@ -18,14 +18,12 @@
     <a href="">Download ExEditor</a>
   </p>
 </p>
-___
 
 # Preview Screenshots
 <p align="left">
   <img src="./images/preview.png" alt="Preview" width="700" height="400">
   <img src="./images/preview2.png" alt="Preview2" width="700" height="400">
 </p>
-___
 
 # Keyboard Shortcuts
 ExEditor has shortcuts for most commonly performed actions. The list of all the shortcuts is presented bellow:
