@@ -15,7 +15,7 @@
     <br />
     <a href="">Explore Website</a>
     ·
-    <a href="">Download ExEditor</a>
+    <a href="https://github.com/KayTwenty/ExEditor/releases/download/0.5/ExEditor.zip">Download ExEditor</a>
   </p>
 </p>
 
