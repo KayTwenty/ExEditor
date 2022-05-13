@@ -1,9 +1,9 @@
 def main():
-	x = input("What is your favourite food: ")
-	print("Your favourite food is:", x)
-	input("Type <Enter> to quit")
-
+	answer = input("What is your fav number?: ")
+	print("Your fav number is: ", answer)
+	input("Press <Enter> to quit")
 main()
+
 
 
 

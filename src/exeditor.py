@@ -12,6 +12,7 @@ from ex_menubar import Menu, Menubar
 from ex_statusbar import Statusbar
 from ex_linenumbers import TextLineNumbers
 from ex_textarea import CustomText
+from ex_find import FindWindow
 
 
 class ExEditor(tk.Frame):
@@ -28,10 +29,10 @@ class ExEditor(tk.Frame):
                             activeForeground='white',
                             activeBackground='#9c8383',)
         # Start editor according to defined settings in settings.yaml
-        with open('settings.yaml') as settings_yaml:
+        with open('config/settings.yaml') as settings_yaml:
             self.settings = yaml.load(settings_yaml, Loader=yaml.FullLoader)
 
-        master.tk_setPalette(background='#272822', foreground='#8f3f71')
+        master.tk_setPalette(background='#272822', foreground='black')
         
         self.font_family = self.settings['font_family']
         self.bg_color = self.settings['bg_color']
@@ -89,7 +90,7 @@ class ExEditor(tk.Frame):
                                 wrap='none',
                                 spacing1=self.top_spacing, 
                                 spacing3=self.bottom_spacing,
-                                selectbackground='#7a7666',
+                                selectbackground='#75715e',
                                 insertbackground=self.insertion_color,
                                 insertofftime=self.insertion_blink,
                                 bd=0,
@@ -146,6 +147,9 @@ class ExEditor(tk.Frame):
                                           accelerator='Ctrl+G',
                                           command=self.hightlight)
 
+        self.textarea.tag_configure('find_match', background='#75715e')
+        self.textarea.find_match_index = None
+        self.textarea.find_search_starting_index = 1.0
         # Calling function to bind hotkeys.
         self.bind_shortcuts()
         self.control_key = False
@@ -157,7 +161,7 @@ class ExEditor(tk.Frame):
             return _settings
 
     def store_settings_data(self, information):
-        with open('settings.yaml', 'w') as user_settings:
+        with open('config/settings.yaml', 'w') as user_settings:
             yaml.dump(information, user_settings)
 
     def clear_and_replace_textarea(self):
@@ -217,7 +221,7 @@ class ExEditor(tk.Frame):
             if MsgBox == 'yes':
                 self.store_settings_data(_settings)  
             else:
-                self.save('settings.yaml')
+                self.save('config/settings.yaml')
 
     # Editor quiet mode calling which removes status bar and menu bar
     def enter_quiet_mode(self, *args):
@@ -280,7 +284,7 @@ class ExEditor(tk.Frame):
                 with open(self.filename, 'w') as f:
                     f.write(textarea_content)
                 self.statusbar.update_status('saved')
-                if self.filename == 'settings.yaml':
+                if self.filename == 'config/settings.yaml':
                     self.reconfigure_settings(self.filename)
                     self.menubar.reconfigure_settings()
             except Exception as e:
@@ -345,7 +349,7 @@ class ExEditor(tk.Frame):
 
     # Opens the main setting file of the editor
     def open_settings_file(self):
-        self.filename = 'settings.yaml'
+        self.filename = 'config/settings.yaml'
         self.textarea.delete(1.0, tk.END)
         with open(self.filename, 'r') as f:
             self.textarea.insert(1.0, f.read())
@@ -354,7 +358,7 @@ class ExEditor(tk.Frame):
 
     # Reset the settings set by the user to the default settings
     def reset_settings_file(self):
-        self.reconfigure_settings('settings-default.yaml', overwrite=True)
+        self.reconfigure_settings('config/settings-default.yaml', overwrite=True)
         self.clear_and_replace_textarea()
         self.syntax_highlighter.on_key_release()
 
@@ -449,13 +453,13 @@ class ExEditor(tk.Frame):
     def _on_linux_scroll_up(self, _):
         if self.control_key:
             self.change_font_size(1)
-            if self.filename == 'settings.yaml':
+            if self.filename == 'config/settings.yaml':
                 self.syntax_highlighter.on_key_release()
 
     def _on_linux_scroll_down(self, _):
         if self.control_key:
             self.change_font_size(-1)
-            if self.filename == 'settings.yaml':
+            if self.filename == 'config/settings.yaml':
                 self.syntax_highlighter.on_key_release()
 
     def change_font_size(self, delta):
@@ -466,11 +470,11 @@ class ExEditor(tk.Frame):
                                        size=self.font_size)
         self.textarea.configure(font=self.font_style)
         self.set_new_tab_width()
-        _settings = self.load_settings_data('settings.yaml')
+        _settings = self.load_settings_data('config/settings.yaml')
         _settings['font_size'] = self.font_size
         self.store_settings_data(_settings)
 
-        if self.filename == 'settings.yaml':
+        if self.filename == 'config/settings.yaml':
             self.clear_and_replace_textarea()
 
     # control_l = 37
@@ -498,6 +502,11 @@ class ExEditor(tk.Frame):
         self.control_key = False
         self.textarea.isControlPressed = False
 
+    def show_find_window(self, event=None):
+        FindWindow(self.textarea)
+        self.control_key = False
+        self.textarea.isControlPressed = False
+    
     # Key Bindings
     def bind_shortcuts(self, *args):
         self.textarea.bind('<Control-n>', self.new_file)
@@ -510,6 +519,7 @@ class ExEditor(tk.Frame):
         self.textarea.bind('<Control-h>', self.apply_hex_color)
         self.textarea.bind('<Control-r>', self.run)
         self.textarea.bind('<Control-q>', self.enter_quiet_mode)
+        self.textarea.bind('<Control-f>', self.show_find_window)
         self.textarea.bind('<Escape>', self.leave_quiet_mode)
         self.textarea.bind('<<Change>>', self._on_change)
         self.textarea.bind('<Configure>', self._on_change)
