@@ -1,33 +1,123 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto Mono', monospace;
+  font-family: "Roboto Mono", monospace;
   box-sizing: border-box;
 }
 
 body {
-  background-color: #a5a9b7;
+  /* background-color: #a5a9b7; */
   color: white;
+}
+
+.gradient_bg {
+  background: linear-gradient(
+  -45deg, 
+  #ee7752, 
+  #e73c7e, 
+  #23a6d5, 
+  #23d5ab);
+  background-size: 400% 400%;
+  -webkit-animation: gradient 15s ease infinite;
+  animation: gradient 15s ease infinite;
+  height: 100vh;
+}
+
+.gradient_bg:hover {
+  -webkit-animation: gradient 15s ease infinite;
+  animation: gradient 15s ease infinite;
+}
+
+@-webkit-keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 .nav {
-  padding: 11px 18px;
-  background-color: #787f93;
+  padding: 17px 18px;
+  background-color: transparent;
   text-align: center;
-}
-
-.nav a {
-  color: white;
-  text-decoration: none;
-  padding-right: 40px;
 }
 
 .nav ul {
   display: inline;
   justify-content: center;
-  
 }
 
-img {
-  padding: 7px;
+.nav a {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+  padding-right: 20px;
+  transition: 0.2s;
+}
+
+.nav a:hover {
+  letter-spacing: 6px;
+}
+
+.title {
+  font-size: 50px;
+  text-shadow: 2px 2px black;
+}
+
+.subtitle a {
+  display: inline-block;
+  font-size: 1.2em;
+  background: #545658;
+  padding: 5px 25px;
+  text-decoration: none;
+  margin-top: 10px;
+  color: white;
+  letter-spacing: 2px;
+  transition: 0.2s;
+}
+
+.subtitle a:hover {
+  letter-spacing: 6px;
+}
+
+.screenshot-header {
+  font-size: 30px;
+  text-shadow: 2px 2px black;
+}
+
+.screenshots img {
+  padding: 7px 7px;
+  height: auto;
+}
+
+.keyboard-header {
+  font-size: 30px;
+  text-shadow: 2px 2px black;
+}
+
+table,
+td,
+th {
+  border: 1px solid;
+  padding: 5px;
+  box-sizing: border-box;
 }
