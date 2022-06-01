@@ -81,6 +81,15 @@ html {
 .title {
   font-size: 50px;
   text-shadow: 2px 2px black;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
+  -moz-transition: 0.2s;
+  -ms-transition: 0.2s;
+  -o-transition: 0.2s;
+}
+
+.title:hover {
+  letter-spacing: 4px;
 }
 
 .subtitle a {
@@ -93,6 +102,10 @@ html {
   color: white;
   letter-spacing: 2px;
   transition: 0.2s;
+  -webkit-transition: 0.2s;
+  -moz-transition: 0.2s;
+  -ms-transition: 0.2s;
+  -o-transition: 0.2s;
 }
 
 .subtitle a:hover {
@@ -102,6 +115,15 @@ html {
 .screenshot-header {
   font-size: 30px;
   text-shadow: 2px 2px black;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
+  -moz-transition: 0.2s;
+  -ms-transition: 0.2s;
+  -o-transition: 0.2s;
+}
+
+.screenshot-header:hover {
+  letter-spacing: 4px;
 }
 
 .screenshots img {
@@ -112,6 +134,15 @@ html {
 .keyboard-header {
   font-size: 30px;
   text-shadow: 2px 2px black;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
+  -moz-transition: 0.2s;
+  -ms-transition: 0.2s;
+  -o-transition: 0.2s;
+}
+
+.keyboard-header:hover {
+  letter-spacing: 4px;
 }
 
 table,
@@ -120,4 +151,10 @@ th {
   border: 1px solid;
   padding: 5px;
   box-sizing: border-box;
+}
+
+.footer {
+  text-align: center;
+  padding: 15px;
+  border: 2px solid;
 }
