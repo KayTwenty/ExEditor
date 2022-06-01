@@ -12,18 +12,28 @@ th {
 }
 
 body {
-  background-color: #697187;
+  background-color: #a5a9b7;
   color: white;
 }
 
 .nav {
-  padding: 11px 15px;
-  background-color: #4b5161;
+  padding: 11px 18px;
+  background-color: #787f93;
   text-align: center;
-
 }
 
 .nav a {
   color: white;
   text-decoration: none;
+  padding-right: 40px;
+}
+
+.nav ul {
+  display: inline;
+  justify-content: center;
+  
+}
+
+img {
+  padding: 7px;
 }
