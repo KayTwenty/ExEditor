@@ -10,9 +10,8 @@ class Menu(tk.Menu):
         super().__init__(bg=settings["menu_bg"],
                          activeforeground=settings['menu_active_fg'],
                          activebackground=settings['menu_active_bg'],
-                         foreground='#d5c4a1',
+                         foreground='#fff',
                          activeborderwidth=0,
-                         relief='sunken',
                          bd=0,
                          *args, **kwargs)
 
@@ -25,9 +24,9 @@ class Menubar:
         # Setting up basic features in menubar
         menubar = tk.Menu(parent.master,
                           font=font_specs,
-                          fg='#ebdbb2',
+                          fg='#75715E',
                           bg='#181816',
-                          activeforeground='#d5c4a1',
+                          activeforeground='#fff',
                           activebackground='#38342b',
                           activeborderwidth=0,
                           bd=0)
@@ -129,5 +128,5 @@ class Menubar:
 
     def release_notes(self):
         box_title = 'Release Notes'
-        box_message = 'Version 0.6 - Added find & replace menu'
+        box_message = 'Version 0.7 - Added new UI'
         tk.messagebox.showinfo(box_title, box_message)

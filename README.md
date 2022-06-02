@@ -25,6 +25,37 @@
   <img src="./src/images/preview2.png" alt="Preview2" width="700" height="400">
 </p>
 
+# Installation
+This project requires **Pygments** as well as **PyYAML**. Both of these packages can be installed through a virtual environment with **requirements.txt**.
+
+**Mac and Linux installation:**
+
+```sh
+python3 -m venv env
+```
+
+```sh
+source env/bin/activate
+```
+
+```sh
+pip3 install -r requirements.txt
+```
+
+**Windows:**
+
+```sh
+python -m venv env
+```
+
+```
+env\Scripts\activate.bat
+```
+```
+pip install -r requirements.txt
+```
+
+
 # Keyboard Shortcuts
 ExEditor has shortcuts for most commonly performed actions. The list of all the shortcuts is presented bellow:
 

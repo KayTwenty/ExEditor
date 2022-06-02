@@ -32,7 +32,7 @@ class ExEditor(tk.Frame):
         with open('config/settings.yaml') as settings_yaml:
             self.settings = yaml.load(settings_yaml, Loader=yaml.FullLoader)
 
-        master.tk_setPalette(background='#272822', foreground='black')
+        master.tk_setPalette(background='#2C2525', foreground='black')
         
         self.font_family = self.settings['font_family']
         self.bg_color = self.settings['bg_color']
@@ -277,6 +277,7 @@ class ExEditor(tk.Frame):
             self.clear_and_replace_textarea()
             self.set_window_title(name=self.filename)
             self.syntax_highlighter.initial_highlight()
+            self.syntax_highlighter.update_highlight_font()
 
     # Saving changes made in the file
     def save(self, *args):
