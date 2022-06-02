@@ -7,7 +7,7 @@ import tkinter.font as tk_font
 from tkinter import (filedialog, messagebox, ttk)
 
 # ExEditor Modules
-from ex_syntax import SyntaxHighlighter
+from quiet_syntax_highlighting import PythonSyntaxHighlight
 from ex_menubar import Menu, Menubar
 from ex_statusbar import Statusbar
 from ex_linenumbers import TextLineNumbers
@@ -101,6 +101,8 @@ class ExEditor(tk.Frame):
                                 maxundo=-1,
                                 padx=self.padding_x,
                                 pady=self.padding_y)
+        
+        self.initial_content = self.textarea.get("1.0", tk.END)
 
         # Retrieving the font from the text area and setting a tab width
         self._font = tk_font.Font(font=self.textarea['font'])
@@ -110,7 +112,7 @@ class ExEditor(tk.Frame):
         self.menubar = Menubar(self)
         self.statusbar = Statusbar(self)
         self.linenumbers = TextLineNumbers(self)
-        self.syntax_highlighter = SyntaxHighlighter(self.textarea, 'languages/python.yaml')
+        self.syntax_highlighter = PythonSyntaxHighlight(self.textarea, self.initial_content)
 
         self.linenumbers.attach(self.textarea)
         self.scrolly.pack(side=tk.RIGHT, fill=tk.Y)
@@ -150,6 +152,8 @@ class ExEditor(tk.Frame):
         self.textarea.tag_configure('find_match', background='#75715e')
         self.textarea.find_match_index = None
         self.textarea.find_search_starting_index = 1.0
+        
+        self.tags_configured = False
         # Calling function to bind hotkeys.
         self.bind_shortcuts()
         self.control_key = False
@@ -168,7 +172,6 @@ class ExEditor(tk.Frame):
             self.textarea.delete(1.0,tk.END)
             try:
                 with open(self.filename, 'r') as f:
-                    self.syntax_highlighter.on_key_release()
                     self.textarea.insert(1.0, f.read())
             except TypeError:
                 pass
@@ -273,8 +276,7 @@ class ExEditor(tk.Frame):
         if self.filename:
             self.clear_and_replace_textarea()
             self.set_window_title(name=self.filename)
-            if self.filename[-3:] == '.py':
-                self.syntax_highlighter.on_key_release()
+            self.syntax_highlighter.initial_highlight()
 
     # Saving changes made in the file
     def save(self, *args):
@@ -354,13 +356,11 @@ class ExEditor(tk.Frame):
         with open(self.filename, 'r') as f:
             self.textarea.insert(1.0, f.read())
         self.set_window_title(name=self.filename)
-        self.syntax_highlighter.on_key_release()
 
     # Reset the settings set by the user to the default settings
     def reset_settings_file(self):
         self.reconfigure_settings('config/settings-default.yaml', overwrite=True)
         self.clear_and_replace_textarea()
-        self.syntax_highlighter.on_key_release()
 
     # Select all written text in the editor
     def select_all_text(self, *args):
@@ -454,13 +454,13 @@ class ExEditor(tk.Frame):
         if self.control_key:
             self.change_font_size(1)
             if self.filename == 'config/settings.yaml':
-                self.syntax_highlighter.on_key_release()
+                pass
 
     def _on_linux_scroll_down(self, _):
         if self.control_key:
             self.change_font_size(-1)
             if self.filename == 'config/settings.yaml':
-                self.syntax_highlighter.on_key_release()
+                pass
 
     def change_font_size(self, delta):
         self.font_size = self.font_size + delta
@@ -495,10 +495,10 @@ class ExEditor(tk.Frame):
     #        self.textarea.isControlPressed = False
     # self.textarea.bind('<KeyRelease>', self._on_keyup)
     
-    def syntax_highlight(self, event):
-        if self.filename and self.filename[-3:] == '.py':
-            self.syntax_highlighter.on_key_release()
-        
+    def syntax_highlight(self, *args):
+        self.syntax_highlighter.default_highlight()
+        if not self.tags_configured:
+            self.syntax_highlighter.syntax_theme_configuration()
         self.control_key = False
         self.textarea.isControlPressed = False
 
