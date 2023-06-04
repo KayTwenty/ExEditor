@@ -2,3 +2,5 @@
 *build
 *dist
 *exeditor.spec
+*.venv
+*.vscode

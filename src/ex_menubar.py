@@ -1,12 +1,14 @@
 import tkinter as tk
 import yaml
+
 from tkinter.colorchooser import askcolor
+from ex_zutilityfuncs import load_settings_data
+
 
 class Menu(tk.Menu):
-    # Menu method and its initializatipn from settings.yaml
+    # menu method and its initializatipn from config/settings.yaml
     def __init__(self, *args, **kwargs):
-        with open('config/settings.yaml', 'r') as settings_yaml:
-            settings = yaml.load(settings_yaml, Loader=yaml.FullLoader)
+        settings = load_settings_data()
         super().__init__(bg=settings["menu_bg"],
                          activeforeground=settings['menu_active_fg'],
                          activebackground=settings['menu_active_bg'],
@@ -15,13 +17,15 @@ class Menu(tk.Menu):
                          bd=0,
                          *args, **kwargs)
 
+
 class Menubar:
-    # Initialising the menu bar of editor
+
+    # initialising the menu bar of editor
     def __init__(self, parent):
         self._parent = parent
         font_specs = ('Droid Sans Fallback', 12)
 
-        # Setting up basic features in menubar
+        # setting up basic features in menubar
         menubar = tk.Menu(parent.master,
                           font=font_specs,
                           fg='#75715E',
@@ -33,17 +37,17 @@ class Menubar:
 
         parent.master.config(menu=menubar)
         self._menubar = menubar
-        # Adding features file dropdown in menubar
+        # adding features file dropdown in menubar
         file_dropdown = Menu(menubar, font=font_specs, tearoff=0)
-        # New file creation feature
+        # new file creation feature
         file_dropdown.add_command(label='New File',
                                   accelerator='Ctrl+N',
                                   command=parent.new_file)
-        # Open file feature
+        # open file feature
         file_dropdown.add_command(label='Open File',
                                   accelerator='Ctrl+O',
                                   command=parent.open_file)
-        # Save file feature
+        # save file feature
         file_dropdown.add_command(label='Save',
                                   accelerator='Ctrl+S',
                                   command=parent.save)
@@ -51,50 +55,48 @@ class Menubar:
         file_dropdown.add_command(label='Save As',
                                   accelerator='Ctrl+Shift+S',
                                   command=parent.save_as)
-        # Run file feature
+        # run file feature
         file_dropdown.add_command(label='Run File',
                                   accelerator='Ctrl+R',
                                   command=parent.run)
-        # Exit Feature
+        # exit feature
         file_dropdown.add_separator()
-        file_dropdown.add_command(label='Exit', 
+        file_dropdown.add_command(label='Exit',
                                   command=parent.on_closing)
-
-        # Adding features to about dropdown in menubar
+        # adding featues to about dropdown in menubar
         about_dropdown = Menu(menubar, font=font_specs, tearoff=0)
         about_dropdown.add_command(label='Release Notes',
                                    command=self.release_notes)
-        # About command Added
+        # about command added
         about_dropdown.add_command(label='About',
                                    command=self.about_message)
-
-        # Adding features to settings dropdown in menubar
+        # adding featues to settings dropdown in menubar
         # Edit settings feature
         settings_dropdown = Menu(menubar, font=font_specs, tearoff=0)
         settings_dropdown.add_command(label='Edit Settings',
                                       command=parent.open_settings_file)
-        # Reset settings feature
+        # reset settings feature
         settings_dropdown.add_command(label='Reset Settings to Default',
                                       command=parent.reset_settings_file)
-        
+
         view_dropdown = Menu(menubar, font=font_specs, tearoff=0)
         view_dropdown.add_command(label='Hide Menu Bar',
                                   command=self.hide_menu)
         view_dropdown.add_command(label='Hide Status Bar',
                                   command=parent.hide_status_bar)
-        
-        # Menubar add buttons
+
+        # menubar add buttons
         menubar.add_cascade(label='File', menu=file_dropdown)
         menubar.add_cascade(label='Settings', menu=settings_dropdown)
         menubar.add_cascade(label='View', menu=view_dropdown)
         menubar.add_command(label='Color Menu', command=self.open_color_picker)
-        menubar.add_command(label='Zen Mode', command=self.enter_quiet_mode)
+        menubar.add_command(label='Zen Mode', command=self.enter_zen_mode)
         menubar.add_cascade(label='About', menu=about_dropdown)
 
         self.menu_fields = [field for field in (
             file_dropdown, about_dropdown, settings_dropdown)]
 
-    # Settings reconfiguration function
+        # Settings reconfiguration function
     def reconfigure_settings(self):
         with open('config/settings.yaml', 'r') as settings_yaml:
             settings = yaml.load(settings_yaml, Loader=yaml.FullLoader)
@@ -103,30 +105,30 @@ class Menubar:
                             activeforeground=settings['menu_active_fg'],
                             activebackground=settings['menu_active_bg'],)
 
-    # Color to different text tye can be set here
+    # color to different text tye can be set here
     def open_color_picker(self):
         return askcolor(title='Color Menu', initialcolor='#d5c4a1')[1]
 
-    # Quiet mode is defined here
-    def enter_quiet_mode(self):
-        self._parent.enter_quiet_mode()
+    # zen mode is defined here
+    def enter_zen_mode(self):
+        self._parent.enter_zen_mode()
 
-    # Hiding the menubar
+    # hiding the menubar
     def hide_menu(self):
         empty_menu = tk.Menu(self._parent.master)
         self._parent.master.config(menu=empty_menu)
 
-    # Display the menubar
+    # display the menubar
     def show_menu(self):
         self._parent.master.config(menu=self._menubar)
 
-    # What to display on clicking about feature is defined here
+    # what to display on clicking about feature is defined here
     def about_message(self):
         box_title = 'About ExEditor'
-        box_message = 'A IDE that tries to give the user the best working environment'
+        box_message = 'A simple text editor for your Python and notetaking needs.'
         tk.messagebox.showinfo(box_title, box_message)
 
     def release_notes(self):
         box_title = 'Release Notes'
-        box_message = 'Version 0.7 - Added new UI'
+        box_message = 'Version 1.0'
         tk.messagebox.showinfo(box_title, box_message)

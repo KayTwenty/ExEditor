@@ -6,7 +6,7 @@ class CustomText(tk.Text):
     def __init__(self, *args, **kwargs):
         tk.Text.__init__(self, *args, **kwargs)
 
-        # Create a proxy for the underlying widget
+        # create a proxy for the underlying widget
         self.isControlPressed = False
         self._orig = self._w + '_orig'
         self.tk.call('rename', self._w, self._orig)
@@ -14,12 +14,12 @@ class CustomText(tk.Text):
         self.bg_color = '#272822'
 
     def _proxy(self, *args):
-        # Let the actual widget perform the requested action
+        # let the actual widget perform the requested action
         try:
             cmd = (self._orig,) + args
             result = ''
             if not self.isControlPressed:
-                # If command is not present, execute the event
+                # if command is not present, execute the event
                 result = self.tk.call(cmd)
             else:
                 # Suppress y-scroll and x-scroll when control is pressed
@@ -28,23 +28,24 @@ class CustomText(tk.Text):
         except tk.TclError:
             result = ''
 
-        # Generate an event if something was added or deleted,
-        # Or the cursor position changed
-        if (args[0] in ('insert', 'replace', 'delete') or 
+        # generate an event if something was added or deleted,
+        # or the cursor position changed
+        if (args[0] in ('insert', 'replace', 'delete') or
             args[0:3] == ('mark', 'set', 'insert') or
             args[0:2] == ('xview', 'moveto') or
             args[0:2] == ('xview', 'scroll') or
             args[0:2] == ('yview', 'moveto') or
             args[0:2] == ('yview', 'scroll')
-        ):
+            ):
             self.event_generate('<<Change>>', when='tail')
 
-        # Return what the actual widget returned
+        # return what the actual widget returned
         return result
-    
+
     def find(self, text_to_find):
         length = tk.IntVar()
-        index = self.search(text_to_find, self.find_search_starting_index, stopindex=tk.END, count=length)
+        index = self.search(
+            text_to_find, self.find_search_starting_index, stopindex=tk.END, count=length)
 
         if index:
             self.tag_remove('find_match', 1.0, tk.END)
